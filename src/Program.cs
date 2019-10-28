@@ -30,13 +30,11 @@ namespace todo
         private const string ContainerId = "FamilyContainer";
         // </Constants>
 
+        // <Main>
         static async Task Main(string[] args)
         {
-            // <CreateClient>
+            
             CosmosClient cosmosClient = new CosmosClient(EndpointUrl, AuthorizationKey);
-            // </CreateClient>
-
-            // <RunSample>
             await Program.CreateDatabaseAsync(cosmosClient);
             await Program.CreateContainerAsync(cosmosClient);
             await Program.AddItemsToContainerAsync(cosmosClient);
@@ -44,8 +42,8 @@ namespace todo
             await Program.ReplaceFamilyItemAsync(cosmosClient);
             await Program.DeleteFamilyItemAsync(cosmosClient);
             await Program.DeleteDatabaseAndCleanupAsync(cosmosClient);
-            // </RunSample>
         }
+        // </Main>
 
         // <CreateDatabaseAsync>
         /// <summary>
@@ -158,20 +156,11 @@ namespace todo
                 IsRegistered = true
             };
 
-            try
-            {
-                // Read the item to see if it exists
-                ItemResponse<Family> wakefieldFamilyResponse = await container.ReadItemAsync<Family>(wakefieldFamily.Id, new PartitionKey(wakefieldFamily.LastName));
-                Console.WriteLine("Item in database with id: {0} already exists\n", wakefieldFamilyResponse.Value.Id);
-            }
-            catch(CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                // Create an item in the container representing the Wakefield family. Note we provide the value of the partition key for this item, which is "Wakefield"
-                ItemResponse<Family> wakefieldFamilyResponse = await container.CreateItemAsync<Family>(wakefieldFamily, new PartitionKey(wakefieldFamily.LastName));
+            // Create an item in the container representing the Wakefield family. Note we provide the value of the partition key for this item, which is "Wakefield"
+            ItemResponse<Family> wakefieldFamilyResponse = await container.UpsertItemAsync<Family>(wakefieldFamily, new PartitionKey(wakefieldFamily.LastName));
 
-                // Note that after creating the item, we can access the body of the item with the Resource property off the ItemResponse. We can also access the RequestCharge property to see the amount of RUs consumed on this request.
-                Console.WriteLine("Created item in database with id: {0}\n", wakefieldFamilyResponse.Value.Id);
-            }
+            // Note that after creating the item, we can access the body of the item with the Resource property off the ItemResponse. We can also access the RequestCharge property to see the amount of RUs consumed on this request.
+            Console.WriteLine("Created item in database with id: {0}\n", wakefieldFamilyResponse.Value.Id);
         }
         // </AddItemsToContainerAsync>
 
