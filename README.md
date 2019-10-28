@@ -1,53 +1,51 @@
 ---
-page_type: sample
 languages:
 - csharp
 products:
+- azure
+- azure-cosmos-db
 - dotnet
-description: "Add 150 character max description"
-urlFragment: "update-this-to-unique-url-stub"
+page_type: sample
+description: "This sample shows you how to use the Azure Cosmos DB service to store and access data from a .NET console application."
 ---
 
-# Official Microsoft Sample
+# Developing a .NET console app using Azure Cosmos DB
+This sample shows you how to use the Azure Cosmos DB service to store and access data from a .NET console application.
 
-<!-- 
-Guidelines on README format: https://review.docs.microsoft.com/help/onboard/admin/samples/concepts/readme-template?branch=master
+For a complete end-to-end walkthrough of creating this application, please refer to the [full tutorial on the Azure Cosmos DB documentation page](https://aka.ms/CosmosDotnetV4GetStarted).
 
-Guidance on onboarding samples to docs.microsoft.com/samples: https://review.docs.microsoft.com/help/onboard/admin/samples/process/onboarding?branch=master
+## Running this sample
 
-Taxonomies for products and languages: https://review.docs.microsoft.com/new-hope/information-architecture/metadata/taxonomies?branch=master
--->
+1. Before you can run this sample, you must have the following prerequisites:
+	- An active Azure Cosmos DB account - If you don't have an account, refer to the [Create a database account](https://docs.microsoft.com/azure/cosmos-db/create-sql-api-dotnet#create-a-database-account) article.
+	- [NET Core SDK 3+](https://dotnet.microsoft.com/download).
 
-Give a short description for your sample here. What does it do and why is it important?
+1. Clone this repository, or download the zip file.
 
-## Contents
+1. Browse to the `src` folder.
 
-Outline the file contents of the repository. It helps users navigate the codebase, build configuration and any related assets.
+1. Run `dotnet build` to restore all packages.
 
-| File/folder       | Description                                |
-|-------------------|--------------------------------------------|
-| `src`             | Sample source code.                        |
-| `.gitignore`      | Define what to ignore at commit time.      |
-| `CHANGELOG.md`    | List of changes to the sample.             |
-| `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
-| `README.md`       | This README file.                          |
-| `LICENSE`         | The license for the sample.                |
+1. Retrieve the URI and PRIMARY KEY (or SECONDARY KEY) values from the Keys blade of your Azure Cosmos DB account in the Azure portal. For more information on obtaining endpoint & keys for your Azure Cosmos DB account refer to [View, copy, and regenerate access keys and passwords](https://docs.microsoft.com/en-us/azure/cosmos-db/manage-account#keys). If you are using the Emulator, you can also use [its credentials](https://docs.microsoft.com/azure/cosmos-db/local-emulator#authenticating-requests).
 
-## Prerequisites
+1. In the [Program.cs](.\src\Program.cs) file, located in the `src` directory, find **EndPointUri** and **AuthorizationKey** and replace the placeholder values with the values obtained for your account.
 
-Outline the required components and tools that a user might need to have on their machine in order to run the sample. This can be anything from frameworks, SDKs, OS versions or IDE releases.
+```csharp
+    private const string EndpointUrl = "https://<your-account>.documents.azure.com:443/";
 
-## Setup
+    private const string AuthorizationKey = "<your-account-key>";
+```
 
-Explain how to prepare the sample once the user clones or downloads the repository. The section should outline every step necessary to install dependencies and set up any settings (for example, API keys and output folders).
+7. You can now run the application with `dotnet run`.
 
-## Runnning the sample
+## About the code
+The code included in this sample is intended to get you quickly started with a .NET console application that connects to Azure Cosmos DB.
 
-Outline step-by-step instructions to execute the sample and see its output. Include steps for executing the sample from the IDE, starting specific services in the Azure portal or anything related to the overall launch of the code.
+## More information
 
-## Key concepts
-
-Provide users with more context on the tools and services used in the sample. Explain some of the code that is being used and how services interact with each other.
+- [Azure Cosmos DB Documentation](https://docs.microsoft.com/azure/cosmos-db/index)
+- [Azure Cosmos DB .NET SDK for SQL API](https://docs.microsoft.com/azure/cosmos-db/sql-api-sdk-dotnet)
+- [Azure Cosmos DB .NET SDK Reference Documentation](https://docs.microsoft.com/dotnet/api/overview/azure/cosmosdb?view=azure-dotnet)
 
 ## Contributing
 
