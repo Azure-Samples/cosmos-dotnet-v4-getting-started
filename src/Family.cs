@@ -1,10 +1,11 @@
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace todo
 {
     public class Family
     {
-        [JsonProperty(PropertyName = "id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
         public string LastName { get; set; }
         public Parent[] Parents { get; set; }
@@ -13,7 +14,7 @@ namespace todo
         public bool IsRegistered { get; set; }
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonSerializer.Serialize(this);
         }
     }
 
