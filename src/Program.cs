@@ -16,10 +16,10 @@ namespace todo
     // Prerequisites -
     //
     // 1. An Azure Cosmos account - 
-    //    https://azure.microsoft.com/en-us/itemation/articles/itemdb-create-account/
+    //    https://docs.microsoft.com/azure/cosmos-db/create-cosmosdb-resources-portal
     //
-    // 2. Microsoft.Azure.Cosmos NuGet package - 
-    //    http://www.nuget.org/packages/Microsoft.Azure.Cosmos/ 
+    // 2. Azure.Cosmos NuGet package - 
+    //    http://www.nuget.org/packages/Azure.Cosmos/ 
     // ----------------------------------------------------------------------------------------------------------
     public class Program
     {
@@ -52,7 +52,7 @@ namespace todo
         private static async Task CreateDatabaseAsync(CosmosClient cosmosClient)
         {
             // Create a new database
-            Database database = await cosmosClient.CreateDatabaseIfNotExistsAsync(Program.DatabaseId);
+            CosmosDatabase database = await cosmosClient.CreateDatabaseIfNotExistsAsync(Program.DatabaseId);
             Console.WriteLine("Created Database: {0}\n", database.Id);
         }
         // </CreateDatabaseAsync>
@@ -66,7 +66,7 @@ namespace todo
         private static async Task CreateContainerAsync(CosmosClient cosmosClient)
         {
             // Create a new container
-            Container container = await cosmosClient.GetDatabase(Program.DatabaseId).CreateContainerIfNotExistsAsync(Program.ContainerId, "/LastName");
+            CosmosContainer container = await cosmosClient.GetDatabase(Program.DatabaseId).CreateContainerIfNotExistsAsync(Program.ContainerId, "/LastName");
             Console.WriteLine("Created Container: {0}\n", container.Id);
         }
         // </CreateContainerAsync>
@@ -104,14 +104,14 @@ namespace todo
                 IsRegistered = false
             };
 
-            Container container = cosmosClient.GetContainer(Program.DatabaseId, Program.ContainerId);
+            CosmosContainer container = cosmosClient.GetContainer(Program.DatabaseId, Program.ContainerId);
             try
             {
                 // Read the item to see if it exists.  
                 ItemResponse<Family> andersenFamilyResponse = await container.ReadItemAsync<Family>(andersenFamily.Id, new PartitionKey(andersenFamily.LastName));
                 Console.WriteLine("Item in database with id: {0} already exists\n", andersenFamilyResponse.Value.Id);
             }
-            catch(CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            catch(CosmosException ex) when (ex.Status == (int)HttpStatusCode.NotFound)
             {
                 // Create an item in the container representing the Andersen family. Note we provide the value of the partition key for this item, which is "Andersen"
                 ItemResponse<Family> andersenFamilyResponse = await container.CreateItemAsync<Family>(andersenFamily, new PartitionKey(andersenFamily.LastName));
@@ -174,7 +174,7 @@ namespace todo
 
             Console.WriteLine("Running query: {0}\n", sqlQueryText);
 
-            Container container = cosmosClient.GetContainer(Program.DatabaseId, Program.ContainerId);
+            CosmosContainer container = cosmosClient.GetContainer(Program.DatabaseId, Program.ContainerId);
 
             QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
 
@@ -194,7 +194,7 @@ namespace todo
         /// </summary>
         private static async Task ReplaceFamilyItemAsync(CosmosClient cosmosClient)
         {
-            Container container = cosmosClient.GetContainer(Program.DatabaseId, Program.ContainerId);
+            CosmosContainer container = cosmosClient.GetContainer(Program.DatabaseId, Program.ContainerId);
 
             ItemResponse<Family> wakefieldFamilyResponse = await container.ReadItemAsync<Family>("Wakefield.7", new PartitionKey("Wakefield"));
             Family itemBody = wakefieldFamilyResponse;
@@ -216,7 +216,7 @@ namespace todo
         /// </summary>
         private static async Task DeleteFamilyItemAsync(CosmosClient cosmosClient)
         {
-            Container container = cosmosClient.GetContainer(Program.DatabaseId, Program.ContainerId);
+            CosmosContainer container = cosmosClient.GetContainer(Program.DatabaseId, Program.ContainerId);
 
             string partitionKeyValue = "Wakefield";
             string familyId = "Wakefield.7";
@@ -233,7 +233,7 @@ namespace todo
         /// </summary>
         private static async Task DeleteDatabaseAndCleanupAsync(CosmosClient cosmosClient)
         {
-            Database database = cosmosClient.GetDatabase(Program.DatabaseId);
+            CosmosDatabase database = cosmosClient.GetDatabase(Program.DatabaseId);
             DatabaseResponse databaseResourceResponse = await database.DeleteAsync();
 
             Console.WriteLine("Deleted Database: {0}\n", Program.DatabaseId);
